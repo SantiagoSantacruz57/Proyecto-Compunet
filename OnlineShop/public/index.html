@@ -3,10 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Web Page</title>
+    <title>Online Shop</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Welcome to My Web Page</h1>
-    <p>This is a simple HTML page served by a Node.js server using Express.</p>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+        <input type="text" class="search-bar" placeholder="Search...">
+        <button class="manage-account" onclick="showManageAccountPopup()">Manage Account</button>
+        <button class="orders" onclick="redirectToOrders()">Orders</button>
+    </header>
+
+    <div id="manage-account-popup" class="popup">
+        <button onclick="redirectToLogin('admin')">Administrator</button>
+        <button onclick="redirectToLogin('client')">Client</button>
+    </div>
+
+    <main>
+        <div class="grid-container">
+            <div class="product">
+                <img src="product1.jpg" alt="Product 1">
+                <div class="product-info">
+                    <h3>Product 1</h3>
+                    <p>$10.00</p>
+                    <button onclick="addToCart('Product 1', 10)">Add to Cart</button>
+                </div>
+            </div>
+            <div class="product">
+                <img src="product2.jpg" alt="Product 2">
+                <div class="product-info">
+                    <h3>Product 2</h3>
+                    <p>$15.00</p>
+                    <button onclick="addToCart('Product 2', 15)">Add to Cart</button>
+                </div>
+            </div>
+            <!-- Repeat for other products -->
+        </div>
+    </main>
+
+    <aside>
+        <h2>Shopping Cart</h2>
+        <ul id="cart">
+            <!-- Cart items will be added here dynamically -->
+        </ul>
+        <p>Total: $<span id="total">0.00</span></p>
+        <button class="buy-now">Buy Now</button>
+    </aside>
+
+    <script src="scripts.js"></script>
 </body>
 </html>
