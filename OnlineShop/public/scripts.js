@@ -1,6 +1,10 @@
+var currentUserName = "q";
+var currentUserType = "client";
+
 document.addEventListener('DOMContentLoaded', () => {
     loadProducts();
     document.getElementById('toggle-cart').addEventListener('click', toggleCart);
+    loadUser(); 
 });
 
 
@@ -60,12 +64,27 @@ function toggleCart() {
     mainContent.classList.toggle('cart-visible', isVisible);
 }
 
+function loadUser(){
+    const logInButton = document.getElementById('manage-account')
+
+    console.log("adf")
+    if(currentUserType === "client"){
+        logInButton.value = `Welcome,  ${currentUserName}`
+    } else if(currentUserType === "admin"){
+        logInButton.value = `Admin, ${currentUserName}`
+    }
+
+}
+
+
+
 document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault(); 
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     var login = false; 
+    var userType = "";
 
     fetch('resources/users.json')
     .then(response => response.json())
@@ -73,7 +92,8 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         users.forEach(user => {
        
             if(user.username === username && user.password === password){
-                login = true; 
+                login = true;
+                userType = user.type 
             } 
 
         });
@@ -82,6 +102,9 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
             document.getElementById('message').textContent = "Login Correcto!, redirigiendo";
             document.getElementById('message').style.color = "green";
 
+            currentUserName = username 
+            currentUserType = userType 
+            
         } else {
             document.getElementById('message').textContent = "Invalid username or password.";
             document.getElementById('message').style.color = "red";

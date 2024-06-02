@@ -1,0 +1,9 @@
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-rows: 1fr; /* This ensures only one row */
+    gap: 10px;
+    flex-grow: 1;
+    background-color: red;
+}
+

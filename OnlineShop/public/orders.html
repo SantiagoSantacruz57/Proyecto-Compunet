@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styleSheets/styles.css">
+    <link rel="stylesheet" href="styleSheets/orders.css">
+   
 </head>
 <body>
     <header>
         <h1>Your Orders</h1>
     </header>
-    <div class="orders-list">
-        <div class="order">
-            <p>Number of products: 5</p>
-            <p>Total cost: $50.00</p>
-            <button onclick="redirectToOrderDetails()">See Details</button>
-        </div>
-       
-    </div>
+   
+        <main id="main-content">
+            <div class="grid-container" id="orders-grid">
+              
+            </div>
+        </main>
+    
 </body>
-<script>
-function redirectToOrderDetails() {
-    window.location.href = 'order_details.html';
-}
+<script src="orderScript.js">
+
 </script>
 </html>

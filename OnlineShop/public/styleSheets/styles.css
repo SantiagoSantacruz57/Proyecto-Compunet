@@ -75,10 +75,11 @@ aside {
     overflow-y: auto; 
     opacity: 0;
     transition: visibility 0.3s, opacity 0.3s;
+    display:none; 
 }
 
 aside.visible {
-    visibility: visible;
+    display: block;
     opacity: 1;
 }
 

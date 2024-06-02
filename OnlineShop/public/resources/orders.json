@@ -1,0 +1,40 @@
+{
+    "orders": [
+        {
+            "user": "123",
+            "date": "23/11/2021",
+            "totalPrice": 50.00,
+            "orderId": "1",
+            "products": [
+                {
+                    "productName": "AudioTechnicaM40X",
+                    "productPrice": 50.00,
+                    "productImage": "AudioTechnicaM40X.jpg"
+                },
+                {
+                    "productName": "AudioTechnicaM40X",
+                    "productPrice": 50.00,
+                    "productImage": "AudioTechnicaM40X.jpg"
+                },
+                {
+                    "productName": "AudioTechnicaM40X",
+                    "productPrice": 50.00,
+                    "productImage": "AudioTechnicaM40X.jpg"
+                }
+            ]
+        },
+        {
+            "user": "456",
+            "date": "24/11/2021",
+            "totalPrice": 120.00,
+            "orderId": "2",
+            "products": [
+                {
+                    "productName": "SonyWH1000XM4",
+                    "productPrice": 120.00,
+                    "productImage": "SonyWH1000XM4.jpg"
+                }
+            ]
+        }
+    ]
+}
