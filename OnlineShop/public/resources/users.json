@@ -2,6 +2,11 @@
     {
         "username": "123", 
         "password": "123",
-        "type":  "Admin"
+        "type":  "admin"
+    },
+    {
+        "username": "0", 
+        "password": "0",
+        "type":  "client"
     }
 ]

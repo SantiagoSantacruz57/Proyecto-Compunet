@@ -10,27 +10,27 @@
     <header>
         <img src="resources/logo.png" alt="Logo" class="logo">
         <input type="text" class="search-bar" placeholder="Search...">
-        <button class="manage-account"  id="manage-account" onclick="redirectToLogin()">Log In</button>
+        <div id="manage-account-div">
+            <button class="manage-account" id="manage-account" onclick="redirectToLogin()">Log In</button>
+            <div id="manage-account-popup" class="popup">
+                <button onclick="logOut()">Log out</button>
+            </div>
+        </div>
         <button class="orders" onclick="redirectToOrders()">Orders</button>
         <button class="toggle-cart" id="toggle-cart">🛒</button>
     </header>
 
-    <div id="manage-account-popup" class="popup">
-        <button onclick="redirectToLogin('admin')">Administrator</button>
-        <button onclick="redirectToLogin('client')">Client</button>
-    </div>
-
     <div class="main-content">
         <main id="main-content">
             <div class="grid-container" id="product-grid">
-              
+                <!-- Products will be loaded here -->
             </div>
         </main>
 
         <aside id="shopping-cart">
             <h2>Shopping Cart</h2>
             <ul id="cart">
-              
+                <!-- Cart items will be added here -->
             </ul>
             <p>Total: $<span id="total">0.00</span></p>
             <button class="buy-now">Buy Now</button>

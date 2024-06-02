@@ -1,21 +1,52 @@
-var currentUserName = "q";
-var currentUserType = "client";
+var currentUserName = localStorage.getItem('currentUserName') || "";
+var currentUserType = localStorage.getItem('currentUserType') || "";
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded event fired');
+   if (window.location.pathname.includes('user_login.html')) {
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    } else if (window.location.pathname.includes('admin.html')) {
+        document.getElementById('addProductForm').addEventListener('submit', handleAddProduct);
+    } else {
+            console.log("c")
+            loadProducts();
+            document.getElementById('toggle-cart').addEventListener('click', toggleCart);
+            loadUser(); 
+    }
+});
+if (window.location.pathname.includes('index.html')) {
+    console.log("c")
     loadProducts();
     document.getElementById('toggle-cart').addEventListener('click', toggleCart);
-    loadUser(); 
-});
-
-
+    loadUser();
+} 
 function redirectToLogin() {
-    window.location.href = 'user_login.html'
+    console.log('redirectToLogin called');
+    if (!currentUserName) {
+        window.location.href = 'user_login.html';
+    } else {
+        showManageAccountPopup();
+    }
+}
+
+function showManageAccountPopup() {
+    console.log('showManageAccountPopup called');
+    const popup = document.getElementById('manage-account-popup');
+    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+}
+
+function logOut() {
+    console.log('logOut called');
+    currentUserName = "";
+    currentUserType = "";
+    localStorage.removeItem('currentUserName');
+    localStorage.removeItem('currentUserType');
+    loadUser();
 }
 
 function redirectToOrders() {
-    // Assume user type is checked and determined
-    const userType = 'client'; // Example: set to 'client' or 'admin'
-    if (userType === 'client') {
+    console.log('redirectToOrders called');
+    if (currentUserType === 'client') {
         window.location.href = 'orders.html';
     } else {
         alert('Only clients can view orders.');
@@ -23,17 +54,18 @@ function redirectToOrders() {
 }
 
 function addToCart(productName, productPrice) {
+    console.log('addToCart called');
     const basketItems = document.querySelector('#cart');
     const item = document.createElement('li');
     item.textContent = `${productName} - $${productPrice}`;
     basketItems.appendChild(item);
     
-    // Update total
     const total = document.getElementById('total');
     total.textContent = (parseFloat(total.textContent) + productPrice).toFixed(2);
 }
 
 function loadProducts() {
+    console.log('loadProducts called');
     fetch('resources/products.json')
         .then(response => response.json())
         .then(products => {
@@ -55,30 +87,28 @@ function loadProducts() {
         .catch(error => console.error('Error loading products:', error));
 }
 
-
-
 function toggleCart() {
+    console.log('toggleCart called');
     const shoppingCart = document.getElementById('shopping-cart');
     const mainContent = document.querySelector('.main-content');
     const isVisible = shoppingCart.classList.toggle('visible');
     mainContent.classList.toggle('cart-visible', isVisible);
 }
 
-function loadUser(){
-    const logInButton = document.getElementById('manage-account')
-
-    console.log("adf")
-    if(currentUserType === "client"){
-        logInButton.value = `Welcome,  ${currentUserName}`
-    } else if(currentUserType === "admin"){
-        logInButton.value = `Admin, ${currentUserName}`
+function loadUser() {
+    console.log('loadUser called');
+    const logInButton = document.getElementById('manage-account');
+    if (currentUserType === "client") {
+        logInButton.textContent = `Welcome, ${currentUserName}`;
+    } else if (currentUserType === "admin") {
+        logInButton.textContent = `Admin, ${currentUserName}`;
+    } else {
+        logInButton.textContent = 'Log In';
     }
-
 }
 
-
-
-document.getElementById('loginForm').addEventListener('submit', function(event) {
+function handleLogin(event) {
+    console.log('handleLogin called');
     event.preventDefault(); 
 
     const username = document.getElementById('username').value;
@@ -87,29 +117,96 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     var userType = "";
 
     fetch('resources/users.json')
-    .then(response => response.json())
-    .then(users => {
-        users.forEach(user => {
-       
-            if(user.username === username && user.password === password){
-                login = true;
-                userType = user.type 
-            } 
+        .then(response => response.json())
+        .then(users => {
+            users.forEach(user => {
+                if (user.username === username && user.password === password) {
+                    login = true;
+                    userType = user.type;
+                }
+            });
 
-        });
+            if (login) {
+                document.getElementById('message').textContent = "Login Correcto!, redirigiendo";
+                document.getElementById('message').style.color = "green";
 
-        if (login) {
-            document.getElementById('message').textContent = "Login Correcto!, redirigiendo";
-            document.getElementById('message').style.color = "green";
+                localStorage.setItem('currentUserName', currentUserName);
+                localStorage.setItem('currentUserType', currentUserType);
 
-            currentUserName = username 
-            currentUserType = userType 
-            
-        } else {
-            document.getElementById('message').textContent = "Invalid username or password.";
-            document.getElementById('message').style.color = "red";
-        }
 
+
+                setTimeout(() => {
+                    
+                    if(localStorage.getItem(currentUserType === 'client')){
+                    
+                    window.location.href = 'index.html';
+
+                    } else if(localStorage.getItem(currentUserType === 'admin' )){
+                        window.location.href= 'admin.html';
+                    }
+
+                }, 2000); 
+
+
+
+
+            } else {
+                document.getElementById('message').textContent = "Invalid username or password.";
+                document.getElementById('message').style.color = "red";
+            }
+        })
+        .catch(error => console.error('Error loading users:', error));
+}
+
+
+function handleAddProduct(event) {
+    event.preventDefault();
+
+    const productName = document.getElementById('productName').value;
+    const productPrice = parseFloat(document.getElementById('productPrice').value).toFixed(2);
+    const productImage = document.getElementById('productImage').files[0];
+    const productRating = document.getElementById('productRating').value;
+    const messageElement = document.getElementById('message');
+
+    if (!productImage) {
+        messageElement.textContent = "Please select an image.";
+        messageElement.style.color = "red";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('productName', productName);
+    formData.append('productPrice', productPrice);
+    formData.append('productImage', productImage);
+    formData.append('productRating', productRating);
+
+    fetch('/api/addProduct', {
+        method: 'POST',
+        body: formData
     })
-    .catch(error => console.error('Error loading products:', error));
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            messageElement.textContent = "Product added successfully!";
+            messageElement.style.color = "green";
+        } else {
+            messageElement.textContent = "Error adding product.";
+            messageElement.style.color = "red";
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        messageElement.textContent = "Error adding product.";
+        messageElement.style.color = "red";
+    });
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '..', 'public', 'resources', 'productImages'));
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+    }
 });

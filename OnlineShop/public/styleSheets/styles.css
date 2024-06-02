@@ -27,13 +27,18 @@ header {
     margin: 0 10px;
     padding: 10px 20px;
     cursor: pointer;
+    
 }
+
+.manageaccount-div{
+    align-items: center;
+}
+
+
 
 .popup {
     display: none;
-    position: absolute;
-    top: 60px;
-    right: 20px;
+    position:fixed;
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
