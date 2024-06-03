@@ -44,6 +44,16 @@ header {
     padding: 10px;
 }
 
+.add-product-button{
+    display: none; 
+}
+
+.add-product-button.visible{
+    display: block;
+}
+
+
+
 .main-content {
     display: flex;
     transition: padding-right 0.4s;
@@ -55,6 +65,10 @@ header {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
     flex-grow: 1;
+}
+
+#checkout-grid{
+    max-width: 30%;
 }
 
 .product {
@@ -145,4 +159,60 @@ aside.visible {
 
 .login-container button:hover {
     background-color: #4cae4c;
+}
+
+.grid-checkout-container {
+    max-width: 30%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.checkout-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.checkout-item img {
+    max-width: 50px;
+    margin-right: 10px;
+}
+
+.checkout-item .product-info {
+    flex: 1;
+}
+
+#checkout-total {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#checkout-form {
+    margin-top: 20px;
+    margin-left: 20%;
+}
+
+#checkout-form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+#checkout-form input[type="text"], 
+#checkout-form input[type="radio"] {
+    margin-right: 10px;
+}
+
+#checkout-form button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#checkout-form button:hover {
+    background-color: #0056b3;
 }

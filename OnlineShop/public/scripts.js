@@ -1,18 +1,22 @@
 var currentUserName = localStorage.getItem('currentUserName') || "";
 var currentUserType = localStorage.getItem('currentUserType') || "";
+var cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded event fired');
-   if (window.location.pathname.includes('user_login.html')) {
+    if (window.location.pathname.includes('user_login.html')) {
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
     } else if (window.location.pathname.includes('admin.html')) {
         document.getElementById('addProductForm').addEventListener('submit', handleAddProduct);
-    } else if  (window.location.pathname.includes('orders.html')) {
-        loadOrders()
-    }    else {
-            loadProducts();
-            document.getElementById('toggle-cart').addEventListener('click', toggleCart);
-            loadUser(); 
+    } else if (window.location.pathname.includes('orders.html')) {
+        loadOrders();
+    } else if (window.location.pathname.includes('checkout.html')) {
+        loadCheckoutItems();
+    } else {
+        loadProducts();
+        document.getElementById('toggle-cart').addEventListener('click', toggleCart);
+        loadUser();
+        loadCart();
     }
 });
 
@@ -50,16 +54,68 @@ function redirectToOrders() {
     }
 }
 
-function addToCart(productName, productPrice) {
+
+function addToCart(productName, productPrice, productImage) {
     console.log('addToCart called');
     const basketItems = document.querySelector('#cart');
     const item = document.createElement('li');
     item.textContent = `${productName} - $${productPrice}`;
     basketItems.appendChild(item);
-    
+
     const total = document.getElementById('total');
     total.textContent = (parseFloat(total.textContent) + productPrice).toFixed(2);
+
+    // Store cart items in localStorage
+    cartItems.push({ name: productName, price: productPrice, image: productImage });
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
 }
+
+
+
+function loadCart() {
+    console.log('loadCart called');
+    const basketItems = document.querySelector('#cart');
+    const total = document.getElementById('total');
+
+    basketItems.innerHTML = '';
+    let totalAmount = 0;
+
+    cartItems.forEach(item => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${item.name} - $${item.price}`;
+        basketItems.appendChild(listItem);
+        totalAmount += item.price;
+    });
+
+    total.textContent = totalAmount.toFixed(2);
+}
+
+
+function loadCheckoutItems() {
+    console.log('loadCheckoutItems called');
+    const checkoutGrid = document.getElementById('checkout-grid');
+    const checkoutTotal = document.getElementById('checkout-total');
+
+    checkoutGrid.innerHTML = '';
+    let totalAmount = 0;
+
+    cartItems.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'checkout-item';
+        itemDiv.innerHTML = `
+            <img src="resources/productImages/${item.image}" alt="${item.name}">
+            <div class="product-info">
+                <h3>${item.name}</h3>
+                <p>$${item.price.toFixed(2)}</p>
+            </div>
+        `;
+        checkoutGrid.appendChild(itemDiv);
+        totalAmount += item.price;
+    });
+
+    checkoutTotal.textContent = totalAmount.toFixed(2);
+}
+
 
 function loadProducts() {
     console.log('loadProducts called');
@@ -75,7 +131,7 @@ function loadProducts() {
                     <div class="product-info">
                         <h3>${product.name}</h3>
                         <p>$${product.price.toFixed(2)}</p>
-                        <button onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                        <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">Add to Cart</button>
                     </div>
                 `;
                 productGrid.appendChild(productDiv);
@@ -92,6 +148,21 @@ function toggleCart() {
     mainContent.classList.toggle('cart-visible', isVisible);
 }
 
+function addButton() {
+    console.log('add Button called');
+    const addButton = document.getElementById('add-product-button');
+    const isVisible = addButton.classList.add('visible');
+}
+
+function redirectAddProduct(){
+    window.location.href = 'admin.html';
+}
+
+function redirectCheckout(){
+    window.location.href = 'checkout.html'
+}
+
+
 function loadUser() {
     console.log('loadUser called');
     const logInButton = document.getElementById('manage-account');
@@ -102,6 +173,7 @@ function loadUser() {
         logInButton.textContent = `Welcome, ${currentUserName}`;
     } else if (currentUserType === "admin") {
         logInButton.textContent = `Admin, ${currentUserName}`;
+        addButton()
     } else {
         logInButton.textContent = 'Log In';
     }

@@ -2,7 +2,7 @@
 
 Santiago Santacruz A00378149
 
-Ejecutar Server.js y abrir http://localhost:7000 en el navegador
+Ejecutar OnlineShop/API/Server.js y abrir http://localhost:7000 en el navegador
 
 Las funcinalidades de Admin se pueden usar si se ingresa en "Log In" como Admin, y las ordenes solo se pueden visualizar si se entra "orders" despúes de haber ingresado como Cliente 
 

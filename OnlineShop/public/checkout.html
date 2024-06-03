@@ -12,12 +12,15 @@
     </header>
 
     <div class="main-content">
-        <div class="grid-container" id="checkout-grid">
+        <div class="grid-checkout-container" id="checkout-grid">
             <!-- Checkout items will be loaded here -->
         </div>
-        <p>Total: $<span id="checkout-total">0.00</span></p>
+        
+     
 
         <form id="checkout-form">
+            <p>Total: $<span id="checkout-total">0.00</span></p>
+            <br>
             <label for="address">Address:</label>
             <input type="text" id="address" name="address" required>
             <br>
@@ -34,6 +37,14 @@
             <br>
             <button type="submit">Submit</button>
         </form>
+    </div>
+
+    <!-- Popup structure -->
+    <div id="thankYouPopup" class="popup-overlay">
+        <div class="popup-content">
+            <h2>Thank you for your purchase!</h2>
+            <button onclick="redirectToHome()">Home Screen</button>
+        </div>
     </div>
 
     <script src="scripts.js"></script>
