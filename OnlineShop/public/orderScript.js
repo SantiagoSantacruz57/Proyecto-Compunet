@@ -15,7 +15,7 @@ function loadOrders() {
             data.orders.forEach(order => {
                 const orderDiv = document.createElement('div');
                 orderDiv.className = 'order';
-
+                
                 let innerHtml = `
                     <div>
                         <label>Date: ${order.date}</label><br>

@@ -7,19 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
     } else if (window.location.pathname.includes('admin.html')) {
         document.getElementById('addProductForm').addEventListener('submit', handleAddProduct);
-    } else {
-            console.log("c")
+    } else if  (window.location.pathname.includes('orders.html')) {
+        loadOrders()
+    }    else {
             loadProducts();
             document.getElementById('toggle-cart').addEventListener('click', toggleCart);
             loadUser(); 
     }
 });
-if (window.location.pathname.includes('index.html')) {
-    console.log("c")
-    loadProducts();
-    document.getElementById('toggle-cart').addEventListener('click', toggleCart);
-    loadUser();
-} 
+
 function redirectToLogin() {
     console.log('redirectToLogin called');
     if (!currentUserName) {
@@ -41,6 +37,7 @@ function logOut() {
     currentUserType = "";
     localStorage.removeItem('currentUserName');
     localStorage.removeItem('currentUserType');
+    showManageAccountPopup()
     loadUser();
 }
 
@@ -98,6 +95,9 @@ function toggleCart() {
 function loadUser() {
     console.log('loadUser called');
     const logInButton = document.getElementById('manage-account');
+    console.log("currentuserType " +  currentUserType)
+    console.log("currentUserName" +   currentUserName)
+
     if (currentUserType === "client") {
         logInButton.textContent = `Welcome, ${currentUserName}`;
     } else if (currentUserType === "admin") {
@@ -130,22 +130,18 @@ function handleLogin(event) {
                 document.getElementById('message').textContent = "Login Correcto!, redirigiendo";
                 document.getElementById('message').style.color = "green";
 
-                localStorage.setItem('currentUserName', currentUserName);
-                localStorage.setItem('currentUserType', currentUserType);
-
-
+                localStorage.setItem('currentUserName', username);
+                localStorage.setItem('currentUserType', userType);
 
                 setTimeout(() => {
                     
-                    if(localStorage.getItem(currentUserType === 'client')){
-                    
-                    window.location.href = 'index.html';
-
-                    } else if(localStorage.getItem(currentUserType === 'admin' )){
-                        window.location.href= 'admin.html';
+                    if (userType === 'client') {
+                        window.location.href = 'index.html';
+                    } else if (userType === 'admin') {
+                        window.location.href = 'admin.html';
                     }
 
-                }, 2000); 
+                }, 1500); 
 
 
 
@@ -210,3 +206,49 @@ const storage = multer.diskStorage({
         cb(null, uniqueSuffix + '-' + file.originalname);
     }
 });
+
+
+
+function loadOrders() {
+    fetch('resources/orders.json')
+        .then(response => response.json())
+        .then(data => {
+            const ordersGrid = document.getElementById('orders-grid');
+            ordersGrid.innerHTML = ''; 
+
+            data.orders.forEach(order => {
+                
+                if(currentUserName === order.user){
+                
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order';
+                
+
+
+                let innerHtml = `
+                    <div>
+                        <label>Date: ${order.date}</label><br>
+                        <label>Total Price: $${order.totalPrice.toFixed(2)}</label><br>
+                `;
+
+                order.products.forEach(product => {
+                    innerHtml += `
+                        <div class="product">
+                            <img src="resources/productImages/${product.productImage}" alt="${product.productName}" style="width: 100px;">
+                            <label>${product.productName}</label><br>
+                            <label>Product Price: $${product.productPrice.toFixed(2)}</label><br>
+                            
+                        </div>
+                            
+                        
+                    `;
+                });
+
+                innerHtml += '</div>'
+                orderDiv.innerHTML = innerHtml;
+                ordersGrid.appendChild(orderDiv);
+            }
+            });
+        })
+        .catch(error => console.error('Error loading orders:', error));
+}
