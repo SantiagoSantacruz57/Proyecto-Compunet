@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadOrders();
     } else if (window.location.pathname.includes('checkout.html')) {
         loadCheckoutItems();
+        document.getElementById('checkout-form').addEventListener('submit', handleCheckout);
+        saveCurrentDate();
     } else {
         loadProducts();
         document.getElementById('toggle-cart').addEventListener('click', toggleCart);
@@ -160,6 +162,10 @@ function redirectAddProduct(){
 
 function redirectCheckout(){
     window.location.href = 'checkout.html'
+}
+
+function redirectToHome(){
+window.location.href = 'index.html'
 }
 
 
@@ -323,4 +329,49 @@ function loadOrders() {
             });
         })
         .catch(error => console.error('Error loading orders:', error));
+}
+
+
+
+
+function handleCheckout(event) {
+    event.preventDefault();
+    console.log('handleCheckout called');
+
+    const address = document.getElementById('address').value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+    // Save the order to localStorage or send it to the server
+    const order = {
+        user: currentUserName,
+        address: address,
+        paymentMethod: paymentMethod,
+        items: cartItems,
+        total: parseFloat(document.getElementById('checkout-total').textContent),
+        date: new Date().toISOString()
+    };
+
+    fetch('/api/saveOrder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(order)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Clear the cart
+            cartItems = [];
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+            // Show thank you popup
+            document.getElementById('thankYouPopup').style.display = 'block';
+        } else {
+            console.error('Error saving order:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }

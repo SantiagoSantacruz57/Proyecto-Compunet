@@ -61,6 +61,48 @@ app.post('/api/addProduct', upload.single('productImage'), (req, res) => {
 });
 
 
+// Route to handle order submissions
+app.post('/api/saveOrder', (req, res) => {
+    const newOrder = req.body;
+    const ordersFilePath = path.join(__dirname, '../public', 'resources', 'orders.json');
+
+    fs.readFile(ordersFilePath, 'utf8', (err, data) => {
+        if (err && err.code !== 'ENOENT') {
+            console.error('Error reading orders file:', err);
+            return res.status(500).json({ success: false, message: 'Error reading orders file' });
+        }
+
+        let orders = [];
+        if (data) {
+            try {
+                orders = JSON.parse(data);
+            } catch (parseErr) {
+                console.error('Error parsing orders file:', parseErr);
+                return res.status(500).json({ success: false, message: 'Error parsing orders file' });
+            }
+        }
+
+        if (!Array.isArray(orders)) {
+            orders = [];
+        }
+
+        orders.push(newOrder);
+
+        fs.writeFile(ordersFilePath, JSON.stringify(orders, null, 2), (err) => {
+            if (err) {
+                console.error('Error saving order:', err);
+                return res.status(500).json({ success: false, message: 'Error saving order' });
+            }
+
+            res.json({ success: true, message: 'Order saved successfully' });
+        });
+    });
+});
+
+
+
+
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
