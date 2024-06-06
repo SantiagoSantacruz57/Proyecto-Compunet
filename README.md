@@ -15,6 +15,4 @@ password: 123
 
 Para acceder a usuario Cliente: 
 
-Username: 0
-
-password: 0
+Se puede crear un Nuevo Usuario al presionar el botton login y despues presionar el boton register Account 

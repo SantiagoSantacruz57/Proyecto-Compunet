@@ -2,62 +2,26 @@
   {
     "name": "AudioTechnica M40X",
     "price": 50,
-    "image": "AudioTechnicaM40X.jpg",
-    "rating": "5 stars"
+    "image": "AudioTechnicaM40X.jpg"
   },
   {
-    "name": "AudioTechnica M40X",
-    "price": 50,
-    "image": "AudioTechnicaM40X.jpg",
-    "rating": "5 stars"
-  },
-  {
-    "name": "AudioTechnica M40X",
-    "price": 50,
-    "image": "AudioTechnicaM40X.jpg",
-    "rating": "5 stars"
+    "name": "Iphone 15",
+    "price": 1000,
+    "image": "1717675195647-702976274-Iphone 15.webp"
   },
   {
     "name": "Sony XM5",
-    "price": 1000,
-    "image": "1717406995813-594588756-Sony XM5.jpg",
-    "rating": "qergq"
+    "price": 350,
+    "image": "1717675744589-917472241-Sony XM5.jpg"
   },
   {
-    "name": "asdf",
-    "price": 87777,
-    "image": "1717598063251-560107797-Sony XM5.jpg",
-    "rating": "imk,li"
+    "name": "Samsung Note 30",
+    "price": 900,
+    "image": "1717675821463-682287485-Samsung Note 30.webp"
   },
   {
-    "name": "Sony",
-    "price": 0.01,
-    "image": "1717621406141-650238234-mapamundi.jpg",
-    "rating": "asd"
-  },
-  {
-    "name": "<sadfas",
-    "price": 0.01,
-    "image": "1717652925228-406668776-mapamundi.jpg"
-  },
-  {
-    "name": "SDFASDF",
-    "price": 42423,
-    "image": "1717652952593-80115894-product1.jpg"
-  },
-  {
-    "name": "SDFDS",
-    "price": 3245,
-    "image": "1717652982252-781106440-mapamundi.jpg"
-  },
-  {
-    "name": "asdfa",
-    "price": 6,
-    "image": "1717653484088-362794020-GLoow9-XcAAbGlM.jpeg"
-  },
-  {
-    "name": "sdfas",
-    "price": 9999,
-    "image": "1717660020507-147866861-Fondo Lenovo Legion Y540.png"
+    "name": "Koss Porta Pro",
+    "price": 30,
+    "image": "1717675876309-543775178-Koss porta pro.jpg"
   }
 ]

@@ -1,7 +1,7 @@
 [
   {
     "user": "0",
-    "address": "sdfgsdgf",
+    "address": "Cali",
     "paymentMethod": "Card",
     "items": [
       {
@@ -24,121 +24,18 @@
     "date": "2024-06-05T14:30:09.869Z"
   },
   {
-    "user": "0",
-    "address": "5tvt65v",
-    "paymentMethod": "Cash",
-    "items": [
-      {
-        "name": "AudioTechnica M40X",
-        "price": 50,
-        "image": "AudioTechnicaM40X.jpg"
-      },
-      {
-        "name": "AudioTechnica M40X",
-        "price": 50,
-        "image": "AudioTechnicaM40X.jpg"
-      },
-      {
-        "name": "AudioTechnica M40X",
-        "price": 50,
-        "image": "AudioTechnicaM40X.jpg"
-      }
-    ],
-    "total": 150,
-    "date": "2024-06-05T14:33:23.249Z"
-  },
-  {
-    "user": "123",
-    "address": "23542",
+    "user": "a",
+    "address": "xdfas",
     "paymentMethod": "Card",
     "items": [
       {
-        "name": "AudioTechnica M40X",
-        "price": 50,
-        "image": "AudioTechnicaM40X.jpg"
-      },
-      {
-        "name": "AudioTechnica M40X",
-        "price": 50,
-        "image": "AudioTechnicaM40X.jpg"
+        "name": "Iphone 15",
+        "price": 1000,
+        "image": "1717675195647-702976274-Iphone 15.webp",
+        "quantity": 1
       }
     ],
-    "total": 100,
-    "date": "2024-06-06T05:49:57.306Z"
-  },
-  {
-    "user": "0",
-    "address": "adfs",
-    "paymentMethod": "Card",
-    "items": [
-      {
-        "name": "asdf",
-        "price": 87777,
-        "image": "1717598063251-560107797-Sony XM5.jpg",
-        "quantity": 6
-      }
-    ],
-    "total": 526662,
-    "date": "2024-06-06T06:32:35.471Z"
-  },
-  {
-    "user": "0",
-    "address": "qsefwefw",
-    "paymentMethod": "Cash",
-    "items": [
-      {
-        "name": "asdfa",
-        "price": 6,
-        "image": "1717653484088-362794020-GLoow9-XcAAbGlM.jpeg",
-        "quantity": 6
-      }
-    ],
-    "total": 36,
-    "date": "2024-06-06T06:38:19.647Z"
-  },
-  {
-    "user": "123",
-    "address": "asdga",
-    "paymentMethod": "Cash",
-    "items": [
-      {
-        "name": "asdf",
-        "price": 87777,
-        "image": "1717598063251-560107797-Sony XM5.jpg",
-        "quantity": 2
-      }
-    ],
-    "total": 175554,
-    "date": "2024-06-06T07:21:14.763Z"
-  },
-  {
-    "user": "123",
-    "address": "zsfbsd",
-    "paymentMethod": "Card",
-    "items": [
-      {
-        "name": "AudioTechnica M40X",
-        "price": 50,
-        "image": "AudioTechnicaM40X.jpg",
-        "quantity": 7
-      }
-    ],
-    "total": 350,
-    "date": "2024-06-06T07:23:45.049Z"
-  },
-  {
-    "user": "0",
-    "address": "234523",
-    "paymentMethod": "Cash",
-    "items": [
-      {
-        "name": "SDFDS",
-        "price": 3245,
-        "image": "1717652982252-781106440-mapamundi.jpg",
-        "quantity": 2
-      }
-    ],
-    "total": 6490,
-    "date": "2024-06-06T07:46:06.266Z"
+    "total": 1000,
+    "date": "2024-06-06T12:08:16.634Z"
   }
 ]

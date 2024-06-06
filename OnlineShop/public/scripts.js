@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (window.location.pathname.includes('checkout.html')) {
         loadCheckoutItems();
         document.getElementById('checkout-form').addEventListener('submit', handleCheckout);
-    } else {
+    } else if (window.location.pathname.includes('user_register.html')) {
+        document.getElementById('registerForm').addEventListener('submit', handleRegister);
+    }else {
         loadProducts();
         document.getElementById('toggle-cart').addEventListener('click', toggleCart);
         loadUser();
@@ -68,7 +70,7 @@ function addToCart(productName, productPrice, productImage) {
     }
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     loadCart();
-    updateBuyNowButtonState();
+ 
 }
 
 function loadCart() {
@@ -141,28 +143,6 @@ function loadCheckoutItems() {
     checkoutTotal.textContent = totalAmount.toFixed(2);
 }
 
-function loadProducts() {
-    console.log('loadProducts called');
-    fetch('resources/products.json')
-        .then(response => response.json())
-        .then(products => {
-            const productGrid = document.getElementById('product-grid');
-            products.forEach(product => {
-                const productDiv = document.createElement('div');
-                productDiv.className = 'product';
-                productDiv.innerHTML = `
-                    <img src="resources/productImages/${product.image}" alt="${product.name}">
-                    <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <p>$${product.price.toFixed(2)}</p>
-                        <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">Add to Cart</button>
-                    </div>
-                `;
-                productGrid.appendChild(productDiv);
-            });
-        })
-        .catch(error => console.error('Error loading products:', error));
-}
 
 function toggleCart() {
     console.log('toggleCart called');
@@ -171,6 +151,21 @@ function toggleCart() {
     const isVisible = shoppingCart.classList.toggle('visible');
     mainContent.classList.toggle('cart-visible', isVisible);
 }
+
+
+function toggleCartProduct(){
+    console.log('toggleCartProduct called');
+    const shoppingCart = document.getElementById('shopping-cart');
+    const mainContent = document.querySelector('.main-content');
+    if (!shoppingCart.classList.contains('visible')) {
+        const isVisible = shoppingCart.classList.toggle('visible');
+        mainContent.classList.toggle('cart-visible', isVisible);
+    }
+
+}
+
+
+
 
 function addButton() {
     console.log('addButton called');
@@ -183,7 +178,20 @@ function redirectAddProduct() {
 }
 
 function redirectCheckout() {
-    window.location.href = 'checkout.html';
+    console.log('redirectToCheckout called');
+
+    if (currentUserType === 'client') {
+
+        if(cartItems.length !== 0){
+        window.location.href = 'checkout.html';
+        } else {
+            alert('Empty Cart') 
+        }
+
+    } else {
+        alert('Only clients can buy products.');
+    }
+    
 }
 
 function redirectToHome() {
@@ -205,6 +213,8 @@ function loadUser() {
         logInButton.textContent = 'Log In';
     }
 }
+
+
 
 function handleLogin(event) {
     console.log('handleLogin called');
@@ -337,49 +347,9 @@ function loadOrders() {
 }
 
 
-function handleCheckout(event) {
-    event.preventDefault();
-    console.log('handleCheckout called');
-
-    const address = document.getElementById('address').value;
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-
-    // Save the order to localStorage or send it to the server
-    const order = {
-        user: currentUserName,
-        address: address,
-        paymentMethod: paymentMethod,
-        items: cartItems,
-        total: parseFloat(document.getElementById('checkout-total').textContent),
-        date: new Date().toISOString()
-    };
-
-    fetch('/api/saveOrder', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(order)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Clear the cart
-            cartItems = [];
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-            // Show thank you popup
-            document.getElementById('thankYouPopup').style.display = 'block';
-        } else {
-            console.error('Error saving order:', data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
 function searchProducts() {
-    const query = document.getElementById('searchBar').value.toLowerCase();
+    var searchBar = document.getElementById('searchBar')
+    const query = searchBar.value.toLowerCase();
     console.log('Search query:', query);
     console.log('All products:', allProducts);
     const filteredProducts = allProducts.filter(product => product.name.toLowerCase().includes(query));
@@ -387,6 +357,9 @@ function searchProducts() {
     displayProducts(filteredProducts);
     if (filteredProducts.length === 0) {
         showPopup();
+        searchBar.value = ""
+        searchProducts()
+
     }
 }
 
@@ -401,7 +374,7 @@ function displayProducts(products) {
             <div class="product-info">
                 <h3>${product.name}</h3>
                 <p>$${product.price.toFixed(2)}</p>
-                <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">Add to Cart</button>
+                <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}'); toggleCartProduct()">Add to Cart</button>
             </div>
         `;
         productGrid.appendChild(productDiv);
@@ -436,4 +409,190 @@ function closePopup() {
     } else {
         console.error('Popup element not found');
     }
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+    console.log('handleRegister called');
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const message = document.getElementById('message');
+
+    if (password !== confirmPassword) {
+        message.textContent = 'Passwords do not match.';
+        message.style.color = 'red';
+        return;
+    }
+
+    const user = { username, password, type: 'client' };
+
+    fetch('/api/registerUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            message.textContent = 'Registration successful! Redirecting to login...';
+            message.style.color = 'green';
+            setTimeout(() => {
+                window.location.href = 'user_login.html';
+            }, 1500);
+        } else {
+            message.textContent = 'Error: ' + data.message;
+            message.style.color = 'red';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        message.textContent = 'Error registering user.';
+        message.style.color = 'red';
+    });
+}
+
+function redirectToRegister() {
+    window.location.href = 'user_register.html';
+}
+
+function handleCheckout(event) {
+    event.preventDefault();
+    console.log('handleCheckout called');
+
+    const address = document.getElementById('address').value;
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+    // Save the order to localStorage or send it to the server
+    const order = {
+        user: currentUserName,
+        address: address,
+        paymentMethod: paymentMethod,
+        items: cartItems,
+        total: parseFloat(document.getElementById('checkout-total').textContent),
+        date: new Date().toISOString()
+    };
+
+    fetch('/api/saveOrder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(order)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Clear the cart
+            cartItems = [];
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+            // Generate the order image
+            generateOrderImage(order);
+
+            // Show thank you popup
+            document.getElementById('thankYouPopup').style.display = 'block';
+        } else {
+            console.error('Error saving order:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function preloadImage(src, callback) {
+    const img = new Image();
+    img.onload = () => callback(img);
+    img.src = src;
+}
+
+function generateOrderImage(order) {
+    const canvas = document.getElementById('orderCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas dimensions
+    const baseHeight = 260;
+    const itemHeight = 30;
+    const totalHeight = baseHeight + itemHeight * order.items.length;
+
+    canvas.width = 400;
+    canvas.height = totalHeight;
+
+
+    // Load the image
+    preloadImage('resources/logo.png', (img) => {
+        // Set background
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+
+        // Draw the image on the upper left
+        ctx.drawImage(img, 20, 20, 100, 100);
+
+        // Set text style
+        ctx.fillStyle = '#000';
+    
+        // Draw order details
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText(`Order for:`, 140, 30);
+        ctx.font = '16px Arial';
+        ctx.fillText(`${order.user}`, 240, 30);
+
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText(`Address:`, 140, 60);
+        ctx.font = '16px Arial';
+        ctx.fillText(`${order.address}`, 240, 60);
+
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText(`Payment Method:`, 140, 90);
+        ctx.font = '16px Arial';
+        ctx.fillText(`${order.paymentMethod}`, 280, 90);
+
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText(`Date:`, 140, 120);
+        ctx.font = '16px Arial';
+        ctx.fillText(`$${new Date(order.date).toLocaleString()}`, 200, 120);
+
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText(`Items:`, 140, 180);
+     
+        // Set text style for items
+        ctx.font = '16px Arial';
+       
+
+        // Draw items
+        let yPosition = 210;
+        order.items.forEach((item, index) => {
+            ctx.fillText(`${index + 1}. ${item.name} - $${item.price} x${item.quantity}`, 140, yPosition);
+            yPosition += 30;
+        });
+
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText(`Total: `, 140, yPosition);
+        ctx.font = '16px Arial';
+        ctx.fillText(`${order.total.toFixed(2)}`, 200, yPosition);
+
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText("¡Thank you for your purchase!", 140, yPosition+30)
+
+        
+
+        // Convert canvas to image
+        const orderImage = document.getElementById('orderImage');
+        orderImage.src = canvas.toDataURL();
+        orderImage.style.display = 'block';
+    });
+}
+
+function downloadOrderImage() {
+    const orderImage = document.getElementById('orderImage');
+    const link = document.createElement('a');
+    link.href = orderImage.src;
+    link.download = 'order.png';
+    link.click();
 }

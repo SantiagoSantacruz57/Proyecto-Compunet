@@ -1,12 +1,32 @@
 [
-    {
-        "username": "123", 
-        "password": "123",
-        "type":  "admin"
-    },
-    {
-        "username": "0", 
-        "password": "0",
-        "type":  "client"
-    }
+  {
+    "username": "123",
+    "password": "123",
+    "type": "admin"
+  },
+  {
+    "username": "0",
+    "password": "0",
+    "type": "client"
+  },
+  {
+    "username": "x",
+    "password": "x",
+    "type": "client"
+  },
+  {
+    "username": "r",
+    "password": "r",
+    "type": "client"
+  },
+  {
+    "username": "d",
+    "password": "d",
+    "type": "client"
+  },
+  {
+    "username": "a",
+    "password": "a",
+    "type": "client"
+  }
 ]

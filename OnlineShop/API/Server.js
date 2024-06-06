@@ -107,6 +107,47 @@ app.post('/api/saveOrder', (req, res) => {
 });
 
 
+app.post('/api/registerUser', (req, res) => {
+    
+    const usersFilePath = path.join(__dirname, '../public', 'resources', 'users.json');
+
+    const { username, password } = req.body;
+
+    // Ensure that the user object includes the type field
+    const newUser = { username, password, type: 'client' };
+
+    fs.readFile(usersFilePath, (err, data) => {
+        if (err) {
+            console.error('Error reading users file:', err);
+            return res.status(500).json({ success: false, message: 'Internal server error.' });
+        }
+
+        let users = [];
+        try {
+            users = JSON.parse(data);
+        } catch (parseError) {
+            console.error('Error parsing users file:', parseError);
+            return res.status(500).json({ success: false, message: 'Internal server error.' });
+        }
+
+        const userExists = users.some(user => user.username === newUser.username);
+        if (userExists) {
+            return res.status(400).json({ success: false, message: 'Username already exists.' });
+        }
+
+        users.push(newUser);
+
+        fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), (writeErr) => {
+            if (writeErr) {
+                console.error('Error writing users file:', writeErr);
+                return res.status(500).json({ success: false, message: 'Internal server error.' });
+            }
+
+            res.json({ success: true });
+        });
+    });
+});
+
 
 
 
