@@ -1,6 +1,7 @@
 var currentUserName = localStorage.getItem('currentUserName') || "";
 var currentUserType = localStorage.getItem('currentUserType') || "";
 var cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+var allProducts = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded event fired');
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadUser();
         loadCart();
         document.getElementById('clear-cart').addEventListener('click', clearCart);
+        document.getElementById('searchButton').addEventListener('click', searchProducts);
     }
 });
 
@@ -375,4 +377,63 @@ function handleCheckout(event) {
     .catch(error => {
         console.error('Error:', error);
     });
+}
+function searchProducts() {
+    const query = document.getElementById('searchBar').value.toLowerCase();
+    console.log('Search query:', query);
+    console.log('All products:', allProducts);
+    const filteredProducts = allProducts.filter(product => product.name.toLowerCase().includes(query));
+    console.log('Filtered products:', filteredProducts);
+    displayProducts(filteredProducts);
+    if (filteredProducts.length === 0) {
+        showPopup();
+    }
+}
+
+function displayProducts(products) {
+    const productGrid = document.getElementById('product-grid');
+    productGrid.innerHTML = '';
+    products.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.className = 'product';
+        productDiv.innerHTML = `
+            <img src="resources/productImages/${product.image}" alt="${product.name}">
+            <div class="product-info">
+                <h3>${product.name}</h3>
+                <p>$${product.price.toFixed(2)}</p>
+                <button onclick="addToCart('${product.name}', ${product.price}, '${product.image}')">Add to Cart</button>
+            </div>
+        `;
+        productGrid.appendChild(productDiv);
+    });
+}
+
+function loadProducts() {
+    console.log('loadProducts called');
+    fetch('resources/products.json')
+        .then(response => response.json())
+        .then(products => {
+            allProducts = products;
+            console.log('Products loaded:', allProducts);
+            displayProducts(products);
+        })
+        .catch(error => console.error('Error loading products:', error));
+}
+
+function showPopup() {
+    const popup = document.getElementById('no-results-popup');
+    if (popup) {
+        popup.style.display = 'flex';
+    } else {
+        console.error('Popup element not found');
+    }
+}
+
+function closePopup() {
+    const popup = document.getElementById('no-results-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    } else {
+        console.error('Popup element not found');
+    }
 }
