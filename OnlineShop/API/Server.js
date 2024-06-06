@@ -31,35 +31,42 @@ app.get('/', (req, res) => {
 
 // Endpoint to handle product addition
 app.post('/api/addProduct', upload.single('productImage'), (req, res) => {
-    const product = {
+    const productsFilePath = path.join(__dirname, '..', 'public', 'resources', 'products.json');
+
+    const newProduct = {
         name: req.body.productName,
         price: parseFloat(req.body.productPrice),
-        image: req.file.filename, // Use the new filename with unique suffix
-        rating: req.body.productRating
+        image: req.file.filename
     };
 
-    const productsPath = path.join(__dirname, '..', 'public', 'resources', 'products.json');
-
-    fs.readFile(productsPath, 'utf8', (err, data) => {
-        if (err) {
+    fs.readFile(productsFilePath, 'utf8', (err, data) => {
+        if (err && err.code !== 'ENOENT') {
             console.error('Error reading products file:', err);
-            return res.json({ success: false, error: err });
+            return res.status(500).json({ success: false, message: 'Error reading products file' });
         }
 
-        const products = JSON.parse(data);
-        products.push(product);
+        let products = [];
+        if (data) {
+            try {
+                products = JSON.parse(data);
+            } catch (parseErr) {
+                console.error('Error parsing products file:', parseErr);
+                return res.status(500).json({ success: false, message: 'Error parsing products file' });
+            }
+        }
 
-        fs.writeFile(productsPath, JSON.stringify(products, null, 2), (err) => {
+        products.push(newProduct);
+
+        fs.writeFile(productsFilePath, JSON.stringify(products, null, 2), (err) => {
             if (err) {
-                console.error('Error saving products file:', err);
-                return res.json({ success: false, error: err });
+                console.error('Error saving product:', err);
+                return res.status(500).json({ success: false, message: 'Error saving product' });
             }
 
-            res.json({ success: true });
+            res.json({ success: true, message: 'Product added successfully' });
         });
     });
 });
-
 
 // Route to handle order submissions
 app.post('/api/saveOrder', (req, res) => {

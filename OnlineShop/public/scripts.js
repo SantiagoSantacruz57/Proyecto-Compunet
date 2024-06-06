@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (window.location.pathname.includes('checkout.html')) {
         loadCheckoutItems();
         document.getElementById('checkout-form').addEventListener('submit', handleCheckout);
-        saveCurrentDate();
     } else {
         loadProducts();
         document.getElementById('toggle-cart').addEventListener('click', toggleCart);
         loadUser();
         loadCart();
+        document.getElementById('clear-cart').addEventListener('click', clearCart);
     }
 });
 
@@ -43,7 +43,7 @@ function logOut() {
     currentUserType = "";
     localStorage.removeItem('currentUserName');
     localStorage.removeItem('currentUserType');
-    showManageAccountPopup()
+    showManageAccountPopup();
     loadUser();
 }
 
@@ -56,23 +56,18 @@ function redirectToOrders() {
     }
 }
 
-
 function addToCart(productName, productPrice, productImage) {
     console.log('addToCart called');
-    const basketItems = document.querySelector('#cart');
-    const item = document.createElement('li');
-    item.textContent = `${productName} - $${productPrice}`;
-    basketItems.appendChild(item);
-
-    const total = document.getElementById('total');
-    total.textContent = (parseFloat(total.textContent) + productPrice).toFixed(2);
-
-    // Store cart items in localStorage
-    cartItems.push({ name: productName, price: productPrice, image: productImage });
+    const existingItem = cartItems.find(item => item.name === productName);
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cartItems.push({ name: productName, price: productPrice, image: productImage, quantity: 1 });
+    }
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    loadCart();
+    updateBuyNowButtonState();
 }
-
-
 
 function loadCart() {
     console.log('loadCart called');
@@ -84,14 +79,40 @@ function loadCart() {
 
     cartItems.forEach(item => {
         const listItem = document.createElement('li');
-        listItem.textContent = `${item.name} - $${item.price}`;
+        listItem.textContent = `${item.name} - $${item.price} x${item.quantity}`;
+
+        // Add remove button to each cart item
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.onclick = () => removeFromCart(item.name);
+        listItem.appendChild(removeButton);
+
         basketItems.appendChild(listItem);
-        totalAmount += item.price;
+        totalAmount += item.price * item.quantity;
     });
 
     total.textContent = totalAmount.toFixed(2);
 }
 
+function removeFromCart(productName) {
+    console.log('removeFromCart called');
+    const itemIndex = cartItems.findIndex(item => item.name === productName);
+    if (itemIndex > -1) {
+        cartItems[itemIndex].quantity--;
+        if (cartItems[itemIndex].quantity === 0) {
+            cartItems.splice(itemIndex, 1);
+        }
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        loadCart();
+    }
+}
+
+function clearCart() {
+    console.log('clearCart called');
+    cartItems = [];
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    loadCart();
+}
 
 function loadCheckoutItems() {
     console.log('loadCheckoutItems called');
@@ -108,16 +129,15 @@ function loadCheckoutItems() {
             <img src="resources/productImages/${item.image}" alt="${item.name}">
             <div class="product-info">
                 <h3>${item.name}</h3>
-                <p>$${item.price.toFixed(2)}</p>
+                <p>$${item.price.toFixed(2)} x${item.quantity}</p>
             </div>
         `;
         checkoutGrid.appendChild(itemDiv);
-        totalAmount += item.price;
+        totalAmount += item.price * item.quantity;
     });
 
     checkoutTotal.textContent = totalAmount.toFixed(2);
 }
-
 
 function loadProducts() {
     console.log('loadProducts called');
@@ -151,35 +171,34 @@ function toggleCart() {
 }
 
 function addButton() {
-    console.log('add Button called');
+    console.log('addButton called');
     const addButton = document.getElementById('add-product-button');
     const isVisible = addButton.classList.add('visible');
 }
 
-function redirectAddProduct(){
+function redirectAddProduct() {
     window.location.href = 'admin.html';
 }
 
-function redirectCheckout(){
-    window.location.href = 'checkout.html'
+function redirectCheckout() {
+    window.location.href = 'checkout.html';
 }
 
-function redirectToHome(){
-window.location.href = 'index.html'
+function redirectToHome() {
+    window.location.href = 'index.html';
 }
-
 
 function loadUser() {
     console.log('loadUser called');
     const logInButton = document.getElementById('manage-account');
-    console.log("currentuserType " +  currentUserType)
-    console.log("currentUserName" +   currentUserName)
+    console.log("currentuserType " + currentUserType);
+    console.log("currentUserName" + currentUserName);
 
     if (currentUserType === "client") {
         logInButton.textContent = `Welcome, ${currentUserName}`;
     } else if (currentUserType === "admin") {
         logInButton.textContent = `Admin, ${currentUserName}`;
-        addButton()
+        addButton();
     } else {
         logInButton.textContent = 'Log In';
     }
@@ -187,12 +206,12 @@ function loadUser() {
 
 function handleLogin(event) {
     console.log('handleLogin called');
-    event.preventDefault(); 
+    event.preventDefault();
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    var login = false; 
-    var userType = "";
+    let login = false;
+    let userType = "";
 
     fetch('resources/users.json')
         .then(response => response.json())
@@ -212,18 +231,12 @@ function handleLogin(event) {
                 localStorage.setItem('currentUserType', userType);
 
                 setTimeout(() => {
-                    
                     if (userType === 'client') {
                         window.location.href = 'index.html';
                     } else if (userType === 'admin') {
                         window.location.href = 'admin.html';
                     }
-
-                }, 1500); 
-
-
-
-
+                }, 1500);
             } else {
                 document.getElementById('message').textContent = "Invalid username or password.";
                 document.getElementById('message').style.color = "red";
@@ -232,14 +245,12 @@ function handleLogin(event) {
         .catch(error => console.error('Error loading users:', error));
 }
 
-
 function handleAddProduct(event) {
     event.preventDefault();
 
     const productName = document.getElementById('productName').value;
     const productPrice = parseFloat(document.getElementById('productPrice').value).toFixed(2);
     const productImage = document.getElementById('productImage').files[0];
-    const productRating = document.getElementById('productRating').value;
     const messageElement = document.getElementById('message');
 
     if (!productImage) {
@@ -252,27 +263,26 @@ function handleAddProduct(event) {
     formData.append('productName', productName);
     formData.append('productPrice', productPrice);
     formData.append('productImage', productImage);
-    formData.append('productRating', productRating);
 
     fetch('/api/addProduct', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            messageElement.textContent = "Product added successfully!";
-            messageElement.style.color = "green";
-        } else {
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                messageElement.textContent = "Product added successfully!";
+                messageElement.style.color = "green";
+            } else {
+                messageElement.textContent = "Error adding product.";
+                messageElement.style.color = "red";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             messageElement.textContent = "Error adding product.";
             messageElement.style.color = "red";
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        messageElement.textContent = "Error adding product.";
-        messageElement.style.color = "red";
-    });
+        });
 }
 
 const storage = multer.diskStorage({
@@ -285,53 +295,44 @@ const storage = multer.diskStorage({
     }
 });
 
-
-
 function loadOrders() {
     fetch('resources/orders.json')
         .then(response => response.json())
-        .then(data => {
+        .then(orders => {
             const ordersGrid = document.getElementById('orders-grid');
-            ordersGrid.innerHTML = ''; 
+            ordersGrid.innerHTML = '';
 
-            data.orders.forEach(order => {
-                
-                if(currentUserName === order.user){
-                
-                const orderDiv = document.createElement('div');
-                orderDiv.className = 'order';
-                
+            orders.forEach(order => {
+                if (currentUserName === order.user) {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.className = 'order';
 
-
-                let innerHtml = `
-                    <div>
-                        <label>Date: ${order.date}</label><br>
-                        <label>Total Price: $${order.totalPrice.toFixed(2)}</label><br>
-                `;
-
-                order.products.forEach(product => {
-                    innerHtml += `
-                        <div class="product">
-                            <img src="resources/productImages/${product.productImage}" alt="${product.productName}" style="width: 100px;">
-                            <label>${product.productName}</label><br>
-                            <label>Product Price: $${product.productPrice.toFixed(2)}</label><br>
-                            
-                        </div>
-                            
-                        
+                    let innerHtml = `
+                        <div>
+                            <label>Date: ${new Date(order.date).toLocaleString()}</label><br>
+                            <label>Address: ${order.address}</label><br>
+                            <label>Payment Method: ${order.paymentMethod}</label><br>
+                            <label>Total Price: $${order.total.toFixed(2)}</label><br>
                     `;
-                });
 
-                innerHtml += '</div>'
-                orderDiv.innerHTML = innerHtml;
-                ordersGrid.appendChild(orderDiv);
-            }
+                    order.items.forEach(item => {
+                        innerHtml += `
+                            <div class="product">
+                                <img src="resources/productImages/${item.image}" alt="${item.name}" style="width: 100px;">
+                                <label>${item.name}</label><br>
+                                <label>Product Price: $${item.price.toFixed(2)} x${item.quantity}</label><br>
+                            </div>
+                        `;
+                    });
+
+                    innerHtml += '</div>';
+                    orderDiv.innerHTML = innerHtml;
+                    ordersGrid.appendChild(orderDiv);
+                }
             });
         })
         .catch(error => console.error('Error loading orders:', error));
 }
-
-
 
 
 function handleCheckout(event) {

@@ -22,5 +22,37 @@
     "price": 1000,
     "image": "1717406995813-594588756-Sony XM5.jpg",
     "rating": "qergq"
+  },
+  {
+    "name": "asdf",
+    "price": 87777,
+    "image": "1717598063251-560107797-Sony XM5.jpg",
+    "rating": "imk,li"
+  },
+  {
+    "name": "Sony",
+    "price": 0.01,
+    "image": "1717621406141-650238234-mapamundi.jpg",
+    "rating": "asd"
+  },
+  {
+    "name": "<sadfas",
+    "price": 0.01,
+    "image": "1717652925228-406668776-mapamundi.jpg"
+  },
+  {
+    "name": "SDFASDF",
+    "price": 42423,
+    "image": "1717652952593-80115894-product1.jpg"
+  },
+  {
+    "name": "SDFDS",
+    "price": 3245,
+    "image": "1717652982252-781106440-mapamundi.jpg"
+  },
+  {
+    "name": "asdfa",
+    "price": 6,
+    "image": "1717653484088-362794020-GLoow9-XcAAbGlM.jpeg"
   }
 ]

@@ -9,7 +9,8 @@
 <body>
     <header>
         <img src="resources/logo.png" alt="Logo" class="logo">
-        <input type="text" class="search-bar" placeholder="Search...">
+        <input type="text" class="search-bar" id="searchBar" placeholder="Search...">
+        <button id="searchButton" onclick="searchProducts()">Search</button>
         <div id="manage-account-div">
             <button class="manage-account" id="manage-account" onclick="redirectToLogin()">Log In</button>
             <div id="manage-account-popup" class="popup">
@@ -30,11 +31,12 @@
 
         <aside id="shopping-cart">
             <h2>Shopping Cart</h2>
+            <button id="clear-cart">Clear Cart</button>
             <ul id="cart">
                 <!-- Cart items will be added here -->
             </ul>
             <p>Total: $<span id="total">0.00</span></p>
-            <button class="buy-now" onClick="redirectCheckout()">Buy Now</button>
+            <button class="buy-now" id="buy-now" onClick="redirectCheckout()">Buy Now</button>
         </aside>
     </div>
 
